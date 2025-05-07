@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Terminal 项目结构导航
+
+- 项目主入口为 [main.go](mdc:main.go)
+- 管理端代码位于 [management/](mdc:management)
+- Agent 端代码位于 [agent/](mdc:agent)
+- 客户端（TUI/Web）代码位于 [client/](mdc:client)
+- 所有文档集中在 [docs/](mdc:docs) 目录
+  - 设计文档在 [docs/designs/](mdc:docs/designs)
+  - 开发指南为 [docs/develop_guide.md](mdc:docs/develop_guide.md)
+  - 项目计划为 [docs/plans.md](mdc:docs/plans.md)
+  - 中文 README 为 [docs/README_zh.md](mdc:docs/README_zh.md)
+- 代码风格和静态检查配置见 [.golangci.yml](mdc:.golangci.yml)
+- 构建与开发命令见 [Makefile](mdc:Makefile)
