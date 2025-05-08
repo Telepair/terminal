@@ -29,7 +29,7 @@ type Tenant struct {
 	// Unique identifier name for the tenant
 	Name string `json:"name,omitempty"`
 	// Display name of the tenant
-	GivenName *string `json:"given_name,omitempty"`
+	GivenName string `json:"given_name,omitempty"`
 	// Tenant avatar, stored in binary format
 	Avatar []byte `json:"avatar,omitempty"`
 	// Tenant public key for security verification
@@ -132,8 +132,7 @@ func (t *Tenant) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field given_name", values[i])
 			} else if value.Valid {
-				t.GivenName = new(string)
-				*t.GivenName = value.String
+				t.GivenName = value.String
 			}
 		case tenant.FieldAvatar:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -234,10 +233,8 @@ func (t *Tenant) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(t.Name)
 	builder.WriteString(", ")
-	if v := t.GivenName; v != nil {
-		builder.WriteString("given_name=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("given_name=")
+	builder.WriteString(t.GivenName)
 	builder.WriteString(", ")
 	builder.WriteString("avatar=")
 	builder.WriteString(fmt.Sprintf("%v", t.Avatar))

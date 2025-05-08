@@ -32,7 +32,7 @@ type User struct {
 	// Username for login
 	Username string `json:"username,omitempty"`
 	// Display name of the user
-	GivenName *string `json:"given_name,omitempty"`
+	GivenName string `json:"given_name,omitempty"`
 	// User avatar, stored in binary format
 	Avatar *[]byte `json:"avatar,omitempty"`
 	// User email address
@@ -155,8 +155,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field given_name", values[i])
 			} else if value.Valid {
-				u.GivenName = new(string)
-				*u.GivenName = value.String
+				u.GivenName = value.String
 			}
 		case user.FieldAvatar:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -299,10 +298,8 @@ func (u *User) String() string {
 	builder.WriteString("username=")
 	builder.WriteString(u.Username)
 	builder.WriteString(", ")
-	if v := u.GivenName; v != nil {
-		builder.WriteString("given_name=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("given_name=")
+	builder.WriteString(u.GivenName)
 	builder.WriteString(", ")
 	if v := u.Avatar; v != nil {
 		builder.WriteString("avatar=")

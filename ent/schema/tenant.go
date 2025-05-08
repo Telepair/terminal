@@ -32,7 +32,7 @@ func (Tenant) Fields() []ent.Field {
 			Unique().
 			Comment("Unique identifier name for the tenant"),
 		field.String("given_name").
-			Nillable().Optional().
+			Optional().
 			MaxLen(100).
 			Comment("Display name of the tenant"),
 		field.Bytes("avatar").

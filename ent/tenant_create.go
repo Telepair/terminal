@@ -324,7 +324,7 @@ func (tc *TenantCreate) createSpec() (*Tenant, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := tc.mutation.GivenName(); ok {
 		_spec.SetField(tenant.FieldGivenName, field.TypeString, value)
-		_node.GivenName = &value
+		_node.GivenName = value
 	}
 	if value, ok := tc.mutation.Avatar(); ok {
 		_spec.SetField(tenant.FieldAvatar, field.TypeBytes, value)

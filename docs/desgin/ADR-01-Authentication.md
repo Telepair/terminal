@@ -54,7 +54,6 @@
   - `username`: 用户名
   - `role`: 角色
   - `is_superuser`: 是否为超级管理员
-  - `permissions`: 权限列表
 
 ## 用户登出
 

@@ -35,7 +35,7 @@ func (User) Fields() []ent.Field {
 			MaxLen(100).
 			Comment("Username for login"),
 		field.String("given_name").
-			Nillable().Optional().
+			Optional().
 			MaxLen(100).
 			Comment("Display name of the user"),
 		field.Bytes("avatar").

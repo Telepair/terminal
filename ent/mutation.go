@@ -323,7 +323,7 @@ func (m *TenantMutation) GivenName() (r string, exists bool) {
 // OldGivenName returns the old "given_name" field's value of the Tenant entity.
 // If the Tenant object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TenantMutation) OldGivenName(ctx context.Context) (v *string, err error) {
+func (m *TenantMutation) OldGivenName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldGivenName is only allowed on UpdateOne operations")
 	}
@@ -1516,7 +1516,7 @@ func (m *UserMutation) GivenName() (r string, exists bool) {
 // OldGivenName returns the old "given_name" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldGivenName(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldGivenName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldGivenName is only allowed on UpdateOne operations")
 	}
