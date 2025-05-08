@@ -61,7 +61,7 @@ GOLANGCI_LINT := $(shell go env GOPATH)/bin/golangci-lint
 GOLANGCI_LINT_EXISTS := $(shell command -v $(GOLANGCI_LINT) 2>/dev/null)
 GOIMPORTS_EXISTS := $(shell command -v $(GOIMPORTS) 2>/dev/null)
 
-.PHONY: all build run run-dev run-server run-agent run-tui fmt lint test test-unit cover clean help install-tools generate tidy
+.PHONY: all build run run-dev run-server run-agent run-tui fmt lint test test-unit test-e2e cover clean help install-tools generate tidy
 
 # Default target
 all: tidy fmt lint test-unit build
@@ -124,6 +124,10 @@ test-unit:
 	@echo "  >  Running unit tests..."
 	go test -v -race $(shell go list ./... | grep -v /vendor/ | grep -v /test/) # Exclude vendor and e2e/integration test dirs if any
 
+test-e2e:
+	@echo "  >  Running e2e API tests with Ginkgo..."
+	cd tests/e2e && go test -v
+
 # Example target for running tests tagged as 'Example' (from original Makefile)
 example:
 	@echo "  >  Running example tests..."
@@ -185,6 +189,7 @@ help:
 	@echo "  fmt                 Format Go source code (goimports, go fmt)."
 	@echo "  lint                Run linters (go vet, golangci-lint)."
 	@echo "  test / test-unit    Run unit tests with race detector."
+	@echo "  test-e2e            Run e2e API tests using Ginkgo."
 	@echo "  generate            Run 'go generate ./ent' to generate ent code."
 	@echo "  example             Run example tests."
 	@echo "  bench               Run benchmarks."
