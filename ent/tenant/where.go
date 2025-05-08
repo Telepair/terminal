@@ -96,6 +96,11 @@ func AllowRegistration(v bool) predicate.Tenant {
 	return predicate.Tenant(sql.FieldEQ(FieldAllowRegistration, v))
 }
 
+// AdminEmail applies equality check predicate on the "admin_email" field. It's identical to AdminEmailEQ.
+func AdminEmail(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldEQ(FieldAdminEmail, v))
+}
+
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
 func Description(v string) predicate.Tenant {
 	return predicate.Tenant(sql.FieldEQ(FieldDescription, v))
@@ -474,6 +479,71 @@ func AllowedEmailDomainsIsNil() predicate.Tenant {
 // AllowedEmailDomainsNotNil applies the NotNil predicate on the "allowed_email_domains" field.
 func AllowedEmailDomainsNotNil() predicate.Tenant {
 	return predicate.Tenant(sql.FieldNotNull(FieldAllowedEmailDomains))
+}
+
+// AdminEmailEQ applies the EQ predicate on the "admin_email" field.
+func AdminEmailEQ(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldEQ(FieldAdminEmail, v))
+}
+
+// AdminEmailNEQ applies the NEQ predicate on the "admin_email" field.
+func AdminEmailNEQ(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldNEQ(FieldAdminEmail, v))
+}
+
+// AdminEmailIn applies the In predicate on the "admin_email" field.
+func AdminEmailIn(vs ...string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldIn(FieldAdminEmail, vs...))
+}
+
+// AdminEmailNotIn applies the NotIn predicate on the "admin_email" field.
+func AdminEmailNotIn(vs ...string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldNotIn(FieldAdminEmail, vs...))
+}
+
+// AdminEmailGT applies the GT predicate on the "admin_email" field.
+func AdminEmailGT(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldGT(FieldAdminEmail, v))
+}
+
+// AdminEmailGTE applies the GTE predicate on the "admin_email" field.
+func AdminEmailGTE(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldGTE(FieldAdminEmail, v))
+}
+
+// AdminEmailLT applies the LT predicate on the "admin_email" field.
+func AdminEmailLT(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldLT(FieldAdminEmail, v))
+}
+
+// AdminEmailLTE applies the LTE predicate on the "admin_email" field.
+func AdminEmailLTE(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldLTE(FieldAdminEmail, v))
+}
+
+// AdminEmailContains applies the Contains predicate on the "admin_email" field.
+func AdminEmailContains(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldContains(FieldAdminEmail, v))
+}
+
+// AdminEmailHasPrefix applies the HasPrefix predicate on the "admin_email" field.
+func AdminEmailHasPrefix(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldHasPrefix(FieldAdminEmail, v))
+}
+
+// AdminEmailHasSuffix applies the HasSuffix predicate on the "admin_email" field.
+func AdminEmailHasSuffix(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldHasSuffix(FieldAdminEmail, v))
+}
+
+// AdminEmailEqualFold applies the EqualFold predicate on the "admin_email" field.
+func AdminEmailEqualFold(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldEqualFold(FieldAdminEmail, v))
+}
+
+// AdminEmailContainsFold applies the ContainsFold predicate on the "admin_email" field.
+func AdminEmailContainsFold(v string) predicate.Tenant {
+	return predicate.Tenant(sql.FieldContainsFold(FieldAdminEmail, v))
 }
 
 // CustattrIsNil applies the IsNil predicate on the "custattr" field.

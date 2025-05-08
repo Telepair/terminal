@@ -149,6 +149,20 @@ func (tu *TenantUpdate) ClearAllowedEmailDomains() *TenantUpdate {
 	return tu
 }
 
+// SetAdminEmail sets the "admin_email" field.
+func (tu *TenantUpdate) SetAdminEmail(s string) *TenantUpdate {
+	tu.mutation.SetAdminEmail(s)
+	return tu
+}
+
+// SetNillableAdminEmail sets the "admin_email" field if the given value is not nil.
+func (tu *TenantUpdate) SetNillableAdminEmail(s *string) *TenantUpdate {
+	if s != nil {
+		tu.SetAdminEmail(*s)
+	}
+	return tu
+}
+
 // SetCustattr sets the "custattr" field.
 func (tu *TenantUpdate) SetCustattr(m map[string]interface{}) *TenantUpdate {
 	tu.mutation.SetCustattr(m)
@@ -270,6 +284,11 @@ func (tu *TenantUpdate) check() error {
 			return &ValidationError{Name: "given_name", err: fmt.Errorf(`ent: validator failed for field "Tenant.given_name": %w`, err)}
 		}
 	}
+	if v, ok := tu.mutation.AdminEmail(); ok {
+		if err := tenant.AdminEmailValidator(v); err != nil {
+			return &ValidationError{Name: "admin_email", err: fmt.Errorf(`ent: validator failed for field "Tenant.admin_email": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -325,6 +344,9 @@ func (tu *TenantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tu.mutation.AllowedEmailDomainsCleared() {
 		_spec.ClearField(tenant.FieldAllowedEmailDomains, field.TypeJSON)
+	}
+	if value, ok := tu.mutation.AdminEmail(); ok {
+		_spec.SetField(tenant.FieldAdminEmail, field.TypeString, value)
 	}
 	if value, ok := tu.mutation.Custattr(); ok {
 		_spec.SetField(tenant.FieldCustattr, field.TypeJSON, value)
@@ -521,6 +543,20 @@ func (tuo *TenantUpdateOne) ClearAllowedEmailDomains() *TenantUpdateOne {
 	return tuo
 }
 
+// SetAdminEmail sets the "admin_email" field.
+func (tuo *TenantUpdateOne) SetAdminEmail(s string) *TenantUpdateOne {
+	tuo.mutation.SetAdminEmail(s)
+	return tuo
+}
+
+// SetNillableAdminEmail sets the "admin_email" field if the given value is not nil.
+func (tuo *TenantUpdateOne) SetNillableAdminEmail(s *string) *TenantUpdateOne {
+	if s != nil {
+		tuo.SetAdminEmail(*s)
+	}
+	return tuo
+}
+
 // SetCustattr sets the "custattr" field.
 func (tuo *TenantUpdateOne) SetCustattr(m map[string]interface{}) *TenantUpdateOne {
 	tuo.mutation.SetCustattr(m)
@@ -655,6 +691,11 @@ func (tuo *TenantUpdateOne) check() error {
 			return &ValidationError{Name: "given_name", err: fmt.Errorf(`ent: validator failed for field "Tenant.given_name": %w`, err)}
 		}
 	}
+	if v, ok := tuo.mutation.AdminEmail(); ok {
+		if err := tenant.AdminEmailValidator(v); err != nil {
+			return &ValidationError{Name: "admin_email", err: fmt.Errorf(`ent: validator failed for field "Tenant.admin_email": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -727,6 +768,9 @@ func (tuo *TenantUpdateOne) sqlSave(ctx context.Context) (_node *Tenant, err err
 	}
 	if tuo.mutation.AllowedEmailDomainsCleared() {
 		_spec.ClearField(tenant.FieldAllowedEmailDomains, field.TypeJSON)
+	}
+	if value, ok := tuo.mutation.AdminEmail(); ok {
+		_spec.SetField(tenant.FieldAdminEmail, field.TypeString, value)
 	}
 	if value, ok := tuo.mutation.Custattr(); ok {
 		_spec.SetField(tenant.FieldCustattr, field.TypeJSON, value)

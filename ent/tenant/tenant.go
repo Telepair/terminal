@@ -33,6 +33,8 @@ const (
 	FieldAllowRegistration = "allow_registration"
 	// FieldAllowedEmailDomains holds the string denoting the allowed_email_domains field in the database.
 	FieldAllowedEmailDomains = "allowed_email_domains"
+	// FieldAdminEmail holds the string denoting the admin_email field in the database.
+	FieldAdminEmail = "admin_email"
 	// FieldCustattr holds the string denoting the custattr field in the database.
 	FieldCustattr = "custattr"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -62,6 +64,7 @@ var Columns = []string{
 	FieldPublicKey,
 	FieldAllowRegistration,
 	FieldAllowedEmailDomains,
+	FieldAdminEmail,
 	FieldCustattr,
 	FieldDescription,
 }
@@ -91,6 +94,8 @@ var (
 	GivenNameValidator func(string) error
 	// DefaultAllowRegistration holds the default value on creation for the "allow_registration" field.
 	DefaultAllowRegistration bool
+	// AdminEmailValidator is a validator for the "admin_email" field. It is called by the builders before save.
+	AdminEmailValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -136,6 +141,11 @@ func ByPublicKey(opts ...sql.OrderTermOption) OrderOption {
 // ByAllowRegistration orders the results by the allow_registration field.
 func ByAllowRegistration(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAllowRegistration, opts...).ToFunc()
+}
+
+// ByAdminEmail orders the results by the admin_email field.
+func ByAdminEmail(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAdminEmail, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.

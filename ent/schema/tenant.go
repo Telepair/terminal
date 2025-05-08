@@ -47,6 +47,10 @@ func (Tenant) Fields() []ent.Field {
 		field.JSON("allowed_email_domains", []string{}).
 			Optional().
 			Comment("List of allowed email domains for user registration (e.g. ['company.com', 'org.edu'])"),
+		field.String("admin_email").
+			NotEmpty().
+			MaxLen(255).
+			Comment("Admin email address for tenant management"),
 		field.JSON("custattr", map[string]any{}).
 			Optional().
 			Comment("Custom attributes stored in JSON format"),

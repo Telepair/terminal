@@ -46,6 +46,24 @@ func init() {
 	tenantDescAllowRegistration := tenantFields[4].Descriptor()
 	// tenant.DefaultAllowRegistration holds the default value on creation for the allow_registration field.
 	tenant.DefaultAllowRegistration = tenantDescAllowRegistration.Default.(bool)
+	// tenantDescAdminEmail is the schema descriptor for admin_email field.
+	tenantDescAdminEmail := tenantFields[6].Descriptor()
+	// tenant.AdminEmailValidator is a validator for the "admin_email" field. It is called by the builders before save.
+	tenant.AdminEmailValidator = func() func(string) error {
+		validators := tenantDescAdminEmail.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(admin_email string) error {
+			for _, fn := range fns {
+				if err := fn(admin_email); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// tenantDescID is the schema descriptor for id field.
 	tenantDescID := tenantMixinFields0[0].Descriptor()
 	// tenant.DefaultID holds the default value on creation for the id field.

@@ -124,6 +124,12 @@ func (tc *TenantCreate) SetAllowedEmailDomains(s []string) *TenantCreate {
 	return tc
 }
 
+// SetAdminEmail sets the "admin_email" field.
+func (tc *TenantCreate) SetAdminEmail(s string) *TenantCreate {
+	tc.mutation.SetAdminEmail(s)
+	return tc
+}
+
 // SetCustattr sets the "custattr" field.
 func (tc *TenantCreate) SetCustattr(m map[string]interface{}) *TenantCreate {
 	tc.mutation.SetCustattr(m)
@@ -257,6 +263,14 @@ func (tc *TenantCreate) check() error {
 	if _, ok := tc.mutation.AllowRegistration(); !ok {
 		return &ValidationError{Name: "allow_registration", err: errors.New(`ent: missing required field "Tenant.allow_registration"`)}
 	}
+	if _, ok := tc.mutation.AdminEmail(); !ok {
+		return &ValidationError{Name: "admin_email", err: errors.New(`ent: missing required field "Tenant.admin_email"`)}
+	}
+	if v, ok := tc.mutation.AdminEmail(); ok {
+		if err := tenant.AdminEmailValidator(v); err != nil {
+			return &ValidationError{Name: "admin_email", err: fmt.Errorf(`ent: validator failed for field "Tenant.admin_email": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -327,6 +341,10 @@ func (tc *TenantCreate) createSpec() (*Tenant, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.AllowedEmailDomains(); ok {
 		_spec.SetField(tenant.FieldAllowedEmailDomains, field.TypeJSON, value)
 		_node.AllowedEmailDomains = value
+	}
+	if value, ok := tc.mutation.AdminEmail(); ok {
+		_spec.SetField(tenant.FieldAdminEmail, field.TypeString, value)
+		_node.AdminEmail = value
 	}
 	if value, ok := tc.mutation.Custattr(); ok {
 		_spec.SetField(tenant.FieldCustattr, field.TypeJSON, value)

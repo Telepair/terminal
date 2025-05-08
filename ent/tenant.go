@@ -38,6 +38,8 @@ type Tenant struct {
 	AllowRegistration bool `json:"allow_registration,omitempty"`
 	// List of allowed email domains for user registration (e.g. ['company.com', 'org.edu'])
 	AllowedEmailDomains []string `json:"allowed_email_domains,omitempty"`
+	// Admin email address for tenant management
+	AdminEmail string `json:"admin_email,omitempty"`
 	// Custom attributes stored in JSON format
 	Custattr map[string]interface{} `json:"custattr,omitempty"`
 	// Tenant description
@@ -75,7 +77,7 @@ func (*Tenant) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case tenant.FieldEnabled, tenant.FieldAllowRegistration:
 			values[i] = new(sql.NullBool)
-		case tenant.FieldName, tenant.FieldGivenName, tenant.FieldPublicKey, tenant.FieldDescription:
+		case tenant.FieldName, tenant.FieldGivenName, tenant.FieldPublicKey, tenant.FieldAdminEmail, tenant.FieldDescription:
 			values[i] = new(sql.NullString)
 		case tenant.FieldCreatedAt, tenant.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -158,6 +160,12 @@ func (t *Tenant) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &t.AllowedEmailDomains); err != nil {
 					return fmt.Errorf("unmarshal field allowed_email_domains: %w", err)
 				}
+			}
+		case tenant.FieldAdminEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field admin_email", values[i])
+			} else if value.Valid {
+				t.AdminEmail = value.String
 			}
 		case tenant.FieldCustattr:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -242,6 +250,9 @@ func (t *Tenant) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("allowed_email_domains=")
 	builder.WriteString(fmt.Sprintf("%v", t.AllowedEmailDomains))
+	builder.WriteString(", ")
+	builder.WriteString("admin_email=")
+	builder.WriteString(t.AdminEmail)
 	builder.WriteString(", ")
 	builder.WriteString("custattr=")
 	builder.WriteString(fmt.Sprintf("%v", t.Custattr))

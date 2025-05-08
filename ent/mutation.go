@@ -46,6 +46,7 @@ type TenantMutation struct {
 	allow_registration          *bool
 	allowed_email_domains       *[]string
 	appendallowed_email_domains []string
+	admin_email                 *string
 	custattr                    *map[string]interface{}
 	description                 *string
 	clearedFields               map[string]struct{}
@@ -553,6 +554,42 @@ func (m *TenantMutation) ResetAllowedEmailDomains() {
 	delete(m.clearedFields, tenant.FieldAllowedEmailDomains)
 }
 
+// SetAdminEmail sets the "admin_email" field.
+func (m *TenantMutation) SetAdminEmail(s string) {
+	m.admin_email = &s
+}
+
+// AdminEmail returns the value of the "admin_email" field in the mutation.
+func (m *TenantMutation) AdminEmail() (r string, exists bool) {
+	v := m.admin_email
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAdminEmail returns the old "admin_email" field's value of the Tenant entity.
+// If the Tenant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TenantMutation) OldAdminEmail(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAdminEmail is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAdminEmail requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAdminEmail: %w", err)
+	}
+	return oldValue.AdminEmail, nil
+}
+
+// ResetAdminEmail resets all changes to the "admin_email" field.
+func (m *TenantMutation) ResetAdminEmail() {
+	m.admin_email = nil
+}
+
 // SetCustattr sets the "custattr" field.
 func (m *TenantMutation) SetCustattr(value map[string]interface{}) {
 	m.custattr = &value
@@ -739,7 +776,7 @@ func (m *TenantMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TenantMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.enabled != nil {
 		fields = append(fields, tenant.FieldEnabled)
 	}
@@ -766,6 +803,9 @@ func (m *TenantMutation) Fields() []string {
 	}
 	if m.allowed_email_domains != nil {
 		fields = append(fields, tenant.FieldAllowedEmailDomains)
+	}
+	if m.admin_email != nil {
+		fields = append(fields, tenant.FieldAdminEmail)
 	}
 	if m.custattr != nil {
 		fields = append(fields, tenant.FieldCustattr)
@@ -799,6 +839,8 @@ func (m *TenantMutation) Field(name string) (ent.Value, bool) {
 		return m.AllowRegistration()
 	case tenant.FieldAllowedEmailDomains:
 		return m.AllowedEmailDomains()
+	case tenant.FieldAdminEmail:
+		return m.AdminEmail()
 	case tenant.FieldCustattr:
 		return m.Custattr()
 	case tenant.FieldDescription:
@@ -830,6 +872,8 @@ func (m *TenantMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldAllowRegistration(ctx)
 	case tenant.FieldAllowedEmailDomains:
 		return m.OldAllowedEmailDomains(ctx)
+	case tenant.FieldAdminEmail:
+		return m.OldAdminEmail(ctx)
 	case tenant.FieldCustattr:
 		return m.OldCustattr(ctx)
 	case tenant.FieldDescription:
@@ -905,6 +949,13 @@ func (m *TenantMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAllowedEmailDomains(v)
+		return nil
+	case tenant.FieldAdminEmail:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAdminEmail(v)
 		return nil
 	case tenant.FieldCustattr:
 		v, ok := value.(map[string]interface{})
@@ -1034,6 +1085,9 @@ func (m *TenantMutation) ResetField(name string) error {
 		return nil
 	case tenant.FieldAllowedEmailDomains:
 		m.ResetAllowedEmailDomains()
+		return nil
+	case tenant.FieldAdminEmail:
+		m.ResetAdminEmail()
 		return nil
 	case tenant.FieldCustattr:
 		m.ResetCustattr()

@@ -20,6 +20,7 @@ var (
 		{Name: "public_key", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "Tenant public key for security verification"},
 		{Name: "allow_registration", Type: field.TypeBool, Comment: "Whether new user registration is allowed", Default: true},
 		{Name: "allowed_email_domains", Type: field.TypeJSON, Nullable: true, Comment: "List of allowed email domains for user registration (e.g. ['company.com', 'org.edu'])"},
+		{Name: "admin_email", Type: field.TypeString, Size: 255, Comment: "Admin email address for tenant management"},
 		{Name: "custattr", Type: field.TypeJSON, Nullable: true, Comment: "Custom attributes stored in JSON format"},
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "Tenant description"},
 	}
