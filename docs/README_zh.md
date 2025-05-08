@@ -89,4 +89,4 @@ Terminal 是一个全面的平台，旨在简化和保护跨各种基础设施�
 
 ## 许可证
 
-本项目采用 [Apache License 2.0](../LICENSE) 授权。
+本项目采用 [MIT License](../LICENSE) 授权。
