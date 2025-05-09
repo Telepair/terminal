@@ -208,9 +208,9 @@ A recommended Go project structure may look like:
 ### 4.3 Branching & Merging Strategy
 
 - Main branch: main (or master), kept stable, corresponds to released or soon-to-be-released versions.
-- Development branch: develop (optional), base for daily development, new features branch from here.
-- Feature branch: feature/xxx (e.g., feature/e2e-encryption), for new features. Merge to develop (or main) after completion.
-- Fix branch: fix/xxx (e.g., fix/login-bug), for bug fixes on main. Usually merged to both main and develop after fixing.
+- Development branch: dev (optional), base for daily development, new features branch from here.
+- Feature branch: feat/xxx (e.g., feat/e2e-encryption), for new features. Merge to dev after completion.
+- Fix branch: fix/xxx (e.g., fix/login-bug), for bug fixes on main. Usually merged to both main and dev after fixing.
 - Release branch: release/vX.Y.Z (optional), for preparing releases, final testing, and docs update.
 - Merge policy:
   - All code changes must be submitted via Pull Request (PR) / Merge Request (MR).

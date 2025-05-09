@@ -40,12 +40,7 @@ BINARY_NAME := terminal # Single binary name
 CMD_MAIN_PATH ?= ./
 
 # Subcommand arguments (adjust these based on your actual subcommands)
-SERVER_SUBCOMMAND ?= server
-AGENT_SUBCOMMAND ?= agent
-TUI_SUBCOMMAND ?= tui # or cli, client, etc.
-
-# Development mode arguments (assuming it's a flag on the server subcommand)
-DEV_MODE_SERVER_ARGS ?= --dev-mode
+DEV_SUBCOMMAND ?= dev
 
 # Build flags
 BUILD_FLAGS := -v
@@ -63,10 +58,10 @@ GOLANGCI_LINT := $(shell go env GOPATH)/bin/golangci-lint
 GOLANGCI_LINT_EXISTS := $(shell command -v $(GOLANGCI_LINT) 2>/dev/null)
 GOIMPORTS_EXISTS := $(shell command -v $(GOIMPORTS) 2>/dev/null)
 
-.PHONY: all build run run-dev run-server run-agent run-tui fmt lint test test-unit cover clean help install-tools
+.PHONY: all build run run-dev run-server run-agent run-tui fmt lint test test-unit test-e2e cover clean help install-tools generate tidy
 
 # Default target
-all: fmt lint test-unit build
+all: tidy fmt lint test-unit build
 
 # Build target
 build:
@@ -80,25 +75,15 @@ run: run-dev # Default run target, runs dev mode
 
 run-dev: build
 	@echo "  >  Running $(BINARY_NAME) in Development Mode (ENV=dev)..."
-	@echo "     Executing: $(BINARY_DIR)/$(BINARY_NAME) $(SERVER_SUBCOMMAND) $(DEV_MODE_SERVER_ARGS)"
+	@echo "     Executing: $(BINARY_DIR)/$(BINARY_NAME) $(DEV_SUBCOMMAND)"
 	@echo "     Access Web UI (if applicable): http://localhost:<port> (check logs for port)"
-	$(BINARY_DIR)/$(BINARY_NAME) $(SERVER_SUBCOMMAND) $(DEV_MODE_SERVER_ARGS)
+	$(BINARY_DIR)/$(BINARY_NAME) $(DEV_SUBCOMMAND)
 
-run-server: build
-	@echo "  >  Running $(BINARY_NAME) Server..."
-	@echo "     Executing: $(BINARY_DIR)/$(BINARY_NAME) $(SERVER_SUBCOMMAND)"
-	$(BINARY_DIR)/$(BINARY_NAME) $(SERVER_SUBCOMMAND)
-
-run-agent: build
-	@echo "  >  Running $(BINARY_NAME) Agent..."
-	@echo "     Executing: $(BINARY_DIR)/$(BINARY_NAME) $(AGENT_SUBCOMMAND)"
-	# Agent might require configuration, e.g., server address
-	$(BINARY_DIR)/$(BINARY_NAME) $(AGENT_SUBCOMMAND) # --server-addr=nats://localhost:4222 # Example
-
-run-tui: build
-	@echo "  >  Running $(BINARY_NAME) TUI Client..."
-	@echo "     Executing: $(BINARY_DIR)/$(BINARY_NAME) $(TUI_SUBCOMMAND)"
-	$(BINARY_DIR)/$(BINARY_NAME) $(TUI_SUBCOMMAND)
+# Go module maintenance
+tidy:
+	@echo "  >  Tidying Go modules..."
+	go mod tidy
+	@echo "  >  Go modules tidied successfully."
 
 # Development lifecycle targets
 fmt: install-tools
@@ -119,6 +104,10 @@ test: test-unit # Alias 'test' to 'test-unit' as per plans_zh.md
 test-unit:
 	@echo "  >  Running unit tests..."
 	go test -v -race $(shell go list ./... | grep -v /vendor/ | grep -v /test/) # Exclude vendor and e2e/integration test dirs if any
+
+test-e2e:
+	@echo "  >  Running e2e API tests with Ginkgo..."
+	cd tests/e2e && go test -v
 
 # Example target for running tests tagged as 'Example' (from original Makefile)
 example:
@@ -144,16 +133,20 @@ clean:
 	# go clean -cache -modcache # Uncomment for a more thorough clean of Go caches
 	@echo "     Cleaned binary and coverage files."
 
-# Tool installation
 install-tools:
-	@if [ -z "$(GOIMPORTS_EXISTS)" ]; then \
-		echo "  >  Installing goimports..."; \
+	@echo "  >  Installing Go development tools (goimports, golangci-lint) if needed..."
+	@if [ ! -x "$(GOIMPORTS)" ]; then \
 		go install golang.org/x/tools/cmd/goimports@latest; \
 	fi
-	@if [ -z "$(GOLANGCI_LINT_EXISTS)" ]; then \
-		echo "  >  Installing golangci-lint..."; \
-		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+	@if [ ! -x "$(GOLANGCI_LINT)" ]; then \
+		go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.1.6; \
 	fi
+	@echo "     Tools installed or already present."
+
+generate:
+	@echo "  >  Generating ent code..."
+	go generate ./ent
+	@echo "  >  ent code generated."
 
 # Help target
 help:
@@ -161,21 +154,21 @@ help:
 	@echo "Usage: make <target>"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  all                 Run fmt, lint, test-unit, and build the '$(BINARY_NAME)' binary (default)."
+	@echo "  all                 Run tidy, fmt, lint, test-unit, and build the '$(BINARY_NAME)' binary (default)."
 	@echo ""
 	@echo "Build targets (ENV=dev|pro, default: dev):"
 	@echo "  build               Build the single '$(BINARY_NAME)' binary."
 	@echo ""
 	@echo "Run targets (usually run after a build or with ENV=dev for dev builds):"
-	@echo "  run-dev             Run the server in development mode (e.g., '$(BINARY_NAME) $(SERVER_SUBCOMMAND) $(DEV_MODE_SERVER_ARGS)')."
-	@echo "  run-server          Run the Management Server (e.g., '$(BINARY_NAME) $(SERVER_SUBCOMMAND)')."
-	@echo "  run-agent           Run the Agent (e.g., '$(BINARY_NAME) $(AGENT_SUBCOMMAND)')."
-	@echo "  run-tui             Run the TUI Client (e.g., '$(BINARY_NAME) $(TUI_SUBCOMMAND)')."
+	@echo "  run-dev             Run the server in development mode (e.g., '$(BINARY_NAME) $(DEV_SUBCOMMAND)')."
 	@echo ""
 	@echo "Development lifecycle:"
+	@echo "  tidy                Tidy Go modules (go mod tidy)."
 	@echo "  fmt                 Format Go source code (goimports, go fmt)."
 	@echo "  lint                Run linters (go vet, golangci-lint)."
 	@echo "  test / test-unit    Run unit tests with race detector."
+	@echo "  test-e2e            Run e2e API tests using Ginkgo."
+	@echo "  generate            Run 'go generate ./ent' to generate ent code."
 	@echo "  example             Run example tests."
 	@echo "  bench               Run benchmarks."
 	@echo "  cover               Generate and display test coverage report."
@@ -189,9 +182,6 @@ help:
 	@echo "  ENV                   Set to 'pro' for production builds (e.g., make ENV=pro build). Default is 'dev'."
 	@echo "  VERSION               Set a custom version string (e.g., make VERSION=v1.2.3 build)."
 	@echo "  PROJECT_MODULE_PATH   Go module path, usually auto-detected (e.g., github.com/user/project)."
-	@echo "  CMD_MAIN_PATH         Path to the main package for '$(BINARY_NAME)' (default: ./cmd/$(BINARY_NAME))."
-	@echo "  SERVER_SUBCOMMAND     Server subcommand name (default: server)."
-	@echo "  AGENT_SUBCOMMAND      Agent subcommand name (default: agent)."
-	@echo "  TUI_SUBCOMMAND        TUI subcommand name (default: tui)."
-	@echo "  DEV_MODE_SERVER_ARGS  Arguments for server dev mode (default: --dev-mode)."
+	@echo "  CMD_MAIN_PATH         Path to the main package for '$(BINARY_NAME)' (default: ./))."
+	@echo "  DEV_SUBCOMMAND        Dev subcommand name (default: dev)."
 	@echo ""

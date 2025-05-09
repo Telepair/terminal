@@ -208,9 +208,9 @@ Agent 端部署在需要被管理的远端目标机器上，主要职责包括�
 ### 4.3 分支与合并策略
 
 - 主分支: main (或 master)，保持稳定，对应已发布或即将发布的版本。
-- 开发分支: develop (可选)，作为日常开发的基础分支，新功能从此分支创建 feature 分支。
-- 功能分支: feature/xxx (例如 feature/e2e-encryption)，用于开发新功能。开发完成后合并到 develop (或 main)。
-- 修复分支: fix/xxx (例如 fix/login-bug)，用于修复 main 分支上的 bug。修复后通常会合并到 main 和 develop。
+- 开发分支: dev (可选)，作为日常开发的基础分支，新功能从此分支创建 feature 分支。
+- 功能分支: feat/xxx (例如 feat/e2e-encryption)，用于开发新功能。开发完成后合并到 dev。
+- 修复分支: fix/xxx (例如 fix/login-bug)，用于修复 main 分支上的 bug。修复后通常会合并到 main 和 dev。
 - 发布分支: release/vX.Y.Z (可选)，用于准备版本发布，进行最后的测试和文档更新。
 - 合并方式:
   - 所有代码变更必须通过 Pull Request (PR) / Merge Request (MR) 提交。

@@ -6,17 +6,23 @@ run:
 
 linters:
   enable:
-    - gofmt
-    - goimports
-    - govet
     - errcheck
-    - gosimple
     - ineffassign
     - staticcheck
-    - typecheck
     - unused
     - gocyclo
     - gosec
     - misspell
     - whitespace
     - revive
+  exclusions:
+    rules:
+      - path: cmd
+        linters:
+          - revive
+      - path: ent
+        linters:
+          - revive
+      - path: tests
+        linters:
+          - revive
